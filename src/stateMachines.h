@@ -1,7 +1,9 @@
 #ifndef stateMachine_included
 #define stateMachine_included
 
-void state_advance();
-void setButtonPress(char state);
+void buttonOneState();
+void buttonTwoState();
+void buttonThreeState();
+void buttonFourState();
 
 #endif // included

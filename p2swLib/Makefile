@@ -24,7 +24,7 @@ install: libp2sw.a
 clean:
 	rm -f *.a *.o *.elf
 
-switchdemo.elf: switchdemo.o libp2sw.a 
+switchdemo.elf: switchdemo.o libp2sw.a
 	$(CC) $(CFLAGS) ${LDFLAGS} -o $@ $^ -lTimer
 
 load: switchdemo.elf

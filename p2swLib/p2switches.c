@@ -1,17 +1,22 @@
 #include <msp430.h>
 #include "p2switches.h"
+#include "lcdutils.h"
+#include "lcddraw.h"
 
 static unsigned char switch_mask;
 static unsigned char switches_last_reported;
 static unsigned char switches_current;
+char state = 0;
 
-static void
+char
 switch_update_interrupt_sense()
 {
+  char p2val = P2IN;
   switches_current = P2IN & switch_mask;
   /* update switch interrupt to detect changes from current buttons */
   P2IES |= (switches_current);  /* if switch up, sense down */
   P2IES &= (switches_current | ~switch_mask); /* if switch down, sense up */
+  return p2val;
 }
 
 void 
@@ -37,11 +42,23 @@ p2sw_read() {
   return switches_current | (sw_changed << 8);
 }
 
+void
+
+switch_interrupt_handler()
+
+{
+  char p2val = switch_update_interrupt_sense();
+  state = (p2val & SW1) ? 0 : 1;            // 0 if switch 1 is up
+  if (state == 0) state = (p2val & SW2) ? 0 : 2; // 0 if switch 2 is up
+  if (state == 0) state = (p2val & SW3) ? 0 : 3; // 0 if switch 3 is up
+  if (state == 0) state = (p2val & SW4) ? 0 : 4; // 0 if switch 4 is up
+}
+
 /* Switch on P2 (S1) */
 void
 __interrupt_vec(PORT2_VECTOR) Port_2(){
   if (P2IFG & switch_mask) {  /* did a button cause this interrupt? */
     P2IFG &= ~switch_mask;	/* clear pending sw interrupts */
-    switch_update_interrupt_sense();
+    switch_interrupt_handler();
   }
 }

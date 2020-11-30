@@ -1,8 +1,6 @@
 	.arch msp430g2553
 	.p2align 1,0
 	.text			;constants (in flash)
-
-	.extern previousState
 	
 	.text 		; jt is constants (in flash)
 jt:	.word default	;  jt[0]
@@ -15,26 +13,15 @@ jt:	.word default	;  jt[0]
 setButtonPress:
 	sub #2, r1
 	mov.b #1, 0(r1)
-	
-	cmp.b r12, &previousState
-	jne skip
-	cmp.b #0, r12
-	jl skip
 
-	mov #0, r12
-	add #2, r1
-	pop r0
-skip:	
-	mov.b r12, &previousState
-
-	bis.b #0x20, &P1OUT
+	bis.b #0x20, &P1OUT 	; green led on
 
 	cmp.b #2, 0(r1)
 	jz skipTwo
 	
-        ;;;  range check on selector (s)
-	cmp #5, r12	; s-4 doesn't borrow if s>3
-	jhs default	; jmp if s > 3
+        ;;;  range check on selector (state)
+	cmp #5, r12	; state-5 doesn't borrow if s>4
+	jhs default	
 	cmp #-1, r12
 	jz default
 
@@ -62,7 +49,7 @@ default:
 	jmp end
 end:
 skipTwo:
-	bic.b #0x20, &P1OUT
+	bic.b #0x20, &P1OUT 	;green led off
 	
 	mov #1, r12
 	add #2, r1

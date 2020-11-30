@@ -28,9 +28,9 @@ void
 switch_interrupt_handler()
 {
   char p2val = switch_update_interrupt_sense();
-  char state = (p2val & SW1) ? 0 : 1;            // 0 if switch 1 is up 
-  if (state == 0) state = (p2val & SW2) ? 0 : 2; // 0 if switch 2 is up
-  if (state == 0) state = (p2val & SW3) ? 0 : 3; // 0 if switch 3 is up
-  if (state == 0) state = (p2val & SW4) ? 0 : 4; // 0 if switch 4 is up
+  signed char state = (p2val & SW1) ? -1 : 1;     // -1 if switch 1 is up 
+  if (state == -1) state = (p2val & SW2) ? -1 : 2; // -1 if switch 2 is up
+  if (state == -1) state = (p2val & SW3) ? -1 : 3; // -1 if switch 3 is up
+  if (state == -1) state = (p2val & SW4) ? -1 : 4; // -1 if switch 4 is up
   setButtonPress(state); // set next state
 }

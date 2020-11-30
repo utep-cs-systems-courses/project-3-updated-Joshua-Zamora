@@ -8,11 +8,45 @@
 
 int song[] = {660,660,660,510,660,770,380,510,380,320,440,480,450,430,380,660,760,860,700,760,660,520,580,480,510,380,320,440,480,450,430,380,660,760,860,700,760,660,520,580,480,500,760,720,680,620,650,380,430,500,430,500,570,500,760,720,680,620,650,1020,1020,1020,380,500,760,720,680,620,650,380,430,500,430,500,570,585,550,500,380,500,500,500,500,760,720,680,620,650,380,430,500,430,500,570,500,760,720,680,620,650,1020,1020,1020,380,500,760,720,680,620,650,380,430,500,430,500,570,585,550,500,380,500,500,500,500,500,500,500,580,660,500,430,380,500,500,500,500,580,660,870,760,500,500,500,500,580,660,500,430,380,660,660,660,510,660,770,380}; // frequencies for song
 
+void drawSquare(int offc, int offr)
+{
+  for (int r = 0; r < 20; r++)
+    for (int c = 0; c < 20; c++)
+      drawPixel(c + offc, r + offr, COLOR_RED);
+}
+
 void drawOctagon()
 {
-  for (int i = 0; i < 10; i++) {
-    drawPixel(i, i, COLOR_WHITE);
-  }
+  for (int r = 0; r < 20; r++) // top right triangle
+    for (int c = 0; c <= r; c++)
+      drawPixel(90 + c, 70 + r, COLOR_RED);
+
+  for (int r = 0; r < 20; r++) // top left triangle
+    for (int c = 0; c <= r; c++)
+      drawPixel(70 - c, 70 + r, COLOR_RED);
+
+  for (int c = 0; c < 20; c++) // bottom right triangle
+    for (int r = 0; r <= 20-c; r++)
+      drawPixel(90 + c, 109 + r, COLOR_RED);
+
+  for (int c = 0; c < 20; c++) // bottom left triangle
+    for (int r = 0; r <= 20-c; r++)
+      drawPixel(70 - c, 109 + r, COLOR_RED);
+  
+  drawSquare(70, 70);
+  drawSquare(70, 90);
+  drawSquare(70, 110);
+  drawSquare(50, 90);
+  drawSquare(90, 90);
+}
+
+void moveSquare()
+{
+  static int i = 0;
+  static int offSet = 60;
+  
+  if (i == screenWidth) { i = 0; offSet += 20; }
+  drawSquare(i++, offSet);
 }
 
 void playSong()
@@ -60,7 +94,7 @@ void dimLCD()
   led_update();
 }
 
-void buttonOneState() 
+signed char buttonOneState(int i) 
 {
   buzzer_set_period(0);
   clearScreen(COLOR_GREEN);
@@ -71,6 +105,7 @@ void buttonOneState()
   buzzer_set_period(2000);
   clearScreen(COLOR_PINK);
   buzzer_set_period(0);
+  return 1;
 }
 
 void buttonTwoState() 
@@ -78,17 +113,21 @@ void buttonTwoState()
   clearScreen(COLOR_RED);      
   clearScreen(COLOR_BLUE);
   clearScreen(COLOR_WHITE);
-  drawString8x12(20, 20, "MARIO", COLOR_BLACK, COLOR_WHITE);
-  drawString8x12(20, 40, "TIME", COLOR_BLACK, COLOR_WHITE);
+  drawString8x12(40, 20, "MARIO", COLOR_BLACK, COLOR_WHITE);
+  drawString8x12(40, 40, "TIME", COLOR_BLACK, COLOR_WHITE);
 }
 
 void buttonThreeState()
 {
   buzzer_set_period(0);
-  clearScreen(COLOR_ORANGE);      
+  clearScreen(COLOR_ORANGE);
+  buzzer_set_period(2000);
   clearScreen(COLOR_GREEN);
+  buzzer_set_period(1500);
   clearScreen(COLOR_GOLD);
+  buzzer_set_period(1000);
   clearScreen(COLOR_PURPLE);
+  buzzer_set_period(0);
 }
 
 void buttonFourState() 
@@ -96,4 +135,5 @@ void buttonFourState()
   buzzer_set_period(0);
   clearScreen(COLOR_BLACK);
   drawOctagon();
+  drawString8x12(63, 95, "STOP", COLOR_WHITE, COLOR_RED);
 }

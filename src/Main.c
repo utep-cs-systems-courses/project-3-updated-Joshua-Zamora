@@ -7,7 +7,7 @@
 #include "lcddraw.h"
 #include "stateMachines.h"
 
-char previousState = 0;
+signed char previousState = -1;
 short redrawScreen = 0;
 
 void wdt_c_handler()
@@ -16,31 +16,42 @@ void wdt_c_handler()
   if (++count > 25 && previousState == 2)
   {
     playSong();
+    
+    P1OUT |= LED_GREEN;
+    moveSquare();
+    P1OUT &= ~LED_GREEN;
+    
     count = 0;
   }
-  if (previousState == 3) dimLCD();
+  else if (previousState == 4) dimLCD();
 }
 
-void setButtonPress(char state) // sets next state based on button press
+int setButtonPress(signed char state) // sets next state based on button press
 {
-  if (state == previousState || state == 0) return;
+  char var = 1;
+  
+  if (state == previousState || state < 0) return 0;
   previousState = state;
   
   P1OUT |= LED_GREEN;
 
   //and_sr(~0x10);
-  
-  switch (state)
+
+  if (var != 2) {
+    switch (state)
     {
-    case 1: buttonOneState();   break;
+    case 1: state = buttonOneState(1);   break;
     case 2: buttonTwoState();   break;
     case 3: buttonThreeState(); break;
     case 4: buttonFourState();  break;
     }
+  }
 
   //or_sr(0x10);
   
   P1OUT &= ~LED_GREEN;
+  
+  return 1;
 }
 
 void main(void) 
@@ -53,4 +64,4 @@ void main(void)
   enableWDTInterrupts();
   or_sr(0x8);  
   clearScreen(COLOR_BLACK);
-} 
+}

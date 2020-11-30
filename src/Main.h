@@ -1,6 +1,6 @@
 #ifndef main_included
 #define main_included
 
-void setButtonPress(char state);
+int setButtonPress(signed char state);
 
 #endif // included

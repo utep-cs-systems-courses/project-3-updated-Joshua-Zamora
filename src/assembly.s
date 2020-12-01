@@ -9,8 +9,8 @@ jt:	.word default	;  jt[0]
 	.word option3	;  jt[3]
 	.word option4	;  jt[4]
 
-	.global setButtonPress
-setButtonPress:
+	.global state_advance
+state_advance:
 	sub #2, r1
 	mov.b #1, 0(r1)
 

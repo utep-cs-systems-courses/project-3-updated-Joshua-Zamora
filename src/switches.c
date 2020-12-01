@@ -32,5 +32,5 @@ switch_interrupt_handler()
   if (state == -1) state = (p2val & SW2) ? -1 : 2; // -1 if switch 2 is up
   if (state == -1) state = (p2val & SW3) ? -1 : 3; // -1 if switch 3 is up
   if (state == -1) state = (p2val & SW4) ? -1 : 4; // -1 if switch 4 is up
-  setButtonPress(state); // set next state
+  setState(state); // set next state
 }

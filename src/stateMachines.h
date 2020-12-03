@@ -1,12 +1,12 @@
 #ifndef stateMachine_included
 #define stateMachine_included
 
-signed char buttonOneState(int i);
+void buttonOneState();
 void buttonTwoState();
 void buttonThreeState();
 void buttonFourState();
 void playSong();
-void moveSquare();
 void dimLCD();
+void moveSquare();
 
 #endif // included

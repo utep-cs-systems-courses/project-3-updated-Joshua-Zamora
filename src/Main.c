@@ -22,14 +22,13 @@ void wdt_c_handler()
     count = 0;
   }
   count += 1;
-  redrawScreen = 1;
 }
 
 void setState(signed char state)
 {
   if (state != -1) previousState = state;
   buttonPressed = state;
-  buttonChanged = 1;
+  redrawScreen = 1;
 }
 
 void main(void) 
@@ -44,18 +43,19 @@ void main(void)
   clearScreen(COLOR_BLACK);
   
   while (1) {/* forever */
-    if (redrawScreen) {
-      if (buttonChanged)
-      {
-	state_advance(buttonPressed);
-	buttonChanged = 0;
-      }
+    if (redrawScreen)
+    {
+      char success = state_advance(buttonPressed);
+      if (success == 0) goto end;
+      buttonChanged = 0;
       redrawScreen = 0;
     }
+       
     P1OUT |= LED_RED;/* red on */
     P1OUT &= ~LED_GREEN;/* green off */
     or_sr(0x10);/**< CPU OFF */
     P1OUT &= ~LED_RED;/* red off */
     P1OUT |= LED_GREEN;/* green on */
   }
+ end:;
 }

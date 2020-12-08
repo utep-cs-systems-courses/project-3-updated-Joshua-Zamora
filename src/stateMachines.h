@@ -4,9 +4,8 @@
 void buttonOneState();
 void buttonTwoState();
 void buttonThreeState();
-void buttonFourState();
+char buttonFourState(char offset);
 void playSong();
 void dimLCD();
-void moveSquare();
 
 #endif // included

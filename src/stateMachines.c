@@ -7,7 +7,7 @@
 #include "stateMachines.h"
 #include "draw.h"
 
-int song[] = {660,660,660,510,660,770,380,510,380,320,440,480,450,430,380,660,760,860,700,760,660,520,580,480,510,380,320,440,480,450,430,380,660,760,860,700,760,660,520,580,480,500,760,720,680,620,650,380,430,500,430,500,570,500,760,720,680,620,650,1020,1020,1020,380,500,760,720,680,620,650,380,430,500,430,500,570,585,550,500,380,500,500,500,500,760,720,680,620,650,380,430,500,430,500,570,500,760,720,680,620,650,1020,1020,1020,380,500,760,720,680,620,650,380,430,500,430,500,570,585,550,500,380,500,500,500,500,500,500,500,580,660,500,430,380,500,500,500,500,580,660,870,760,500,500,500,500,580,660,500,430,380,660,660,660,510,660,770}; // frequencies for song
+int song[] = {660,660,660,510,660,770,380,510,380,320,440,480,450,430,380,660,760,860,700,760,660,520,580,480,510,380,320,440,480,450,430,380,660,760,860,700,760,660,520,580,480,500,760,720,680,620,650,380,430,500,430,500,570,500,760,720,680,620,650,1020,1020,1020,380,500,760,720,680,620,650,380,430,500,430,500,570,585,550,500,380,500,500,500,500,760,720,680,620,650,380,430,500,430,500,570,500,760,720,680,620,650,1020,1020,1020,380,500,760,720,680,620,650,380,430,500,430,500,570,585,550,500,380,500,500,500,500,500,500,500,580,660,500,430,380,500,500,500,500,580,660,870,760,500,500,500,500,580,660,500,430,380,660,660,660,510,660,770,380}; // frequencies for song
 
 void playSong()
 {
@@ -17,43 +17,6 @@ void playSong()
   buzzer_set_period(2000000 / song[i++]);
 }
 
-void dimLCD()
-{
-  static char dim[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  static char i = 0;
-  static char state = 0;
-  static char count = 0;
-  static char goDown = 0;
-
-  if (dim[9] == 1) { goDown = 1; i = 9; }
-  else if (dim[0] == 0) { goDown = 0; i = 0; }
-
-  if (++count > 8)
-  {
-    if (goDown) dim[i--] = 0;
-    else dim[i++] = 1;
-    count = 0;
-  }
-  
-  switch (state++)
-  {
-  case 0: red_on = dim[0];            break;
-  case 1: red_on = dim[1];            break;
-  case 2: red_on = dim[2];            break;
-  case 3: red_on = dim[3];            break;
-  case 4: red_on = dim[4];            break;
-  case 5: red_on = dim[5];            break;
-  case 6: red_on = dim[6];            break;
-  case 7: red_on = dim[7];            break;
-  case 8: red_on = dim[8];            break;
-  case 9: red_on = dim[9]; state = 0; break;
-  }
-  
-  led_changed = 1;
-  led_update();
-  
-}
-
 void buttonOneState() 
 {
   buzzer_set_period(0);
@@ -61,20 +24,20 @@ void buttonOneState()
   buzzer_set_period(1000);
   clearScreen(COLOR_BLUE);
   buzzer_set_period(1500);
-  clearScreen(COLOR_YELLOW);
+  clearScreen(COLOR_BEIGE);
   buzzer_set_period(2000);
-  clearScreen(COLOR_PINK);
+  clearScreen(COLOR_BLACK);
   buzzer_set_period(0);
-  drawString5x7(40, 40, "Welcome!", COLOR_BLACK, COLOR_PINK);
+  drawString5x7(40, 40, "Welcome!", COLOR_DEEP, COLOR_BLACK);
 }
 
 void buttonTwoState() 
 {
   clearScreen(COLOR_RED);
   clearScreen(COLOR_BLUE);
+  clearScreen(COLOR_GOLD);
   clearScreen(COLOR_BLACK);
-  clearScreen(COLOR_WHITE);
-  drawString5x7(40, 40, "Second!", COLOR_BLACK, COLOR_WHITE);
+  drawString5x7(40, 40, "SECOND!", COLOR_RED, COLOR_BLACK);
 }
 
 void buttonThreeState()
@@ -86,15 +49,65 @@ void buttonThreeState()
   buzzer_set_period(1500);
   clearScreen(COLOR_GOLD);
   buzzer_set_period(1000);
-  clearScreen(COLOR_PURPLE);
+  clearScreen(COLOR_BLACK);
   buzzer_set_period(0);
-  drawString5x7(40, 40, "Third!", COLOR_BLACK, COLOR_PURPLE);
+  drawString5x7(40, 40, "THIRD!", COLOR_PURPLE, COLOR_BLACK);
 }
 
-void buttonFourState() 
+char buttonFourState(char offset) 
 {
   buzzer_set_period(0);
   clearScreen(COLOR_BLACK);
-  drawOctagon();
-  drawString8x12(63, 95, "STOP", COLOR_WHITE, COLOR_RED);
+  char position = offset;
+  
+  drawOctagon(position, COLOR_YELLOW);
+  drawString8x12(63 + position, 95 + position, "STOP", COLOR_WHITE, COLOR_YELLOW);
+  position += 20;
+  
+  drawOctagon(position, COLOR_ORANGE);
+  drawString8x12(63 + position, 95 + position, "STOP", COLOR_WHITE, COLOR_ORANGE);
+  position += 20;
+
+  drawOctagon(position, COLOR_RED);
+  drawString8x12(63 + position, 95 + position, "STOP", COLOR_WHITE, COLOR_RED);
+
+  position = -40;
+
+  drawOctagon(position, COLOR_BLUE);
+  drawString8x12(63 + position, 95 + position, "STOP", COLOR_WHITE, COLOR_BLUE);
+  position += 20;
+  
+  drawOctagon(position, COLOR_PURPLE);
+  drawString8x12(63 + position, 95 + position, "STOP", COLOR_WHITE, COLOR_PURPLE);
+  position += 20;
+
+  drawOctagon(position, COLOR_PINK);
+  drawString8x12(63 + position, 95 + position, "STOP", COLOR_WHITE, COLOR_PINK);
+
+  position = -40;
+
+  drawOctagon(position, COLOR_CHOCOLATE);
+  drawString8x12(63 + position, 95 + position, "STOP", COLOR_WHITE, COLOR_CHOCOLATE);
+  position += 20;
+  
+  drawOctagon(position, COLOR_BROWN);
+  drawString8x12(63 + position, 95 + position, "STOP", COLOR_WHITE, COLOR_BROWN);
+  position += 20;
+
+  drawOctagon(position, COLOR_SIENNA);
+  drawString8x12(63 + position, 95 + position, "STOP", COLOR_WHITE, COLOR_SIENNA);
+
+  position = -40;
+  
+  drawOctagon(position, COLOR_BLACK);
+  drawString8x12(63 + position, 95 + position, "STOP", COLOR_BLACK, COLOR_BLACK);
+  position += 20;
+
+  drawOctagon(position, COLOR_BLACK);
+  drawString8x12(63 + position, 95 + position, "STOP", COLOR_BLACK, COLOR_BLACK);
+  position += 20;
+  
+  drawOctagon(position, COLOR_BLACK);
+  drawString8x12(63 + position, 95 + position, "STOP", COLOR_BLACK, COLOR_BLACK);
+  return 1;
 }

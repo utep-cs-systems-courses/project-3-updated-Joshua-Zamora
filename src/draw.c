@@ -2,36 +2,37 @@
 #include "lcddraw.h"
 #include "draw.h"
 
-void drawSquare(int offc, int offr)
+void drawSquare(int offc, int offr, int color)
 {
   for (int r = 0; r < 20; r++)
     for (int c = 0; c < 20; c++)
-      drawPixel(c + offc, r + offr, COLOR_RED);
+      drawPixel(c + offc, r + offr, color);
 }
 
-void drawOctagon()
+void drawOctagon(char position, int color)
 {
+  
   for (int r = 0; r < 20; r++) // top right triangle
     for (int c = 0; c <= r; c++)
-      drawPixel(90 + c, 70 + r, COLOR_RED);
+      drawPixel(90 + c + position, 70 + r + position, color);
 
   for (int r = 0; r < 20; r++) // top left triangle
     for (int c = 0; c <= r; c++)
-      drawPixel(70 - c, 70 + r, COLOR_RED);
+      drawPixel(70 - c + position, 70 + r + position, color);
 
   for (int c = 0; c < 20; c++) // bottom right triangle
     for (int r = 0; r <= 20-c; r++)
-      drawPixel(90 + c, 109 + r, COLOR_RED);
+      drawPixel(90 + c + position, 109 + r + position, color);
 
   for (int c = 0; c < 20; c++) // bottom left triangle
     for (int r = 0; r <= 20-c; r++)
-      drawPixel(70 - c, 109 + r, COLOR_RED);
+      drawPixel(70 - c + position, 109 + r + position, color);
   
-  drawSquare(70, 70);
-  drawSquare(70, 90);
-  drawSquare(70, 110);
-  drawSquare(50, 90);
-  drawSquare(90, 90);
+  drawSquare(70 + position, 70  + position, color);
+  drawSquare(70 + position, 90  + position, color);
+  drawSquare(70 + position, 110 + position, color);
+  drawSquare(50 + position, 90  + position, color);
+  drawSquare(90 + position, 90  + position, color);
 }
 
 void moveSquare()
@@ -40,7 +41,7 @@ void moveSquare()
   static int offSet = 60;
   
   if (i == screenWidth / 2) { i = 0; offSet += 20; }
-  drawSquare(i++, offSet);
+  drawSquare(i++, offSet, COLOR_BLACK);
 }
 
 void drawChar8x12(u_char rcol, u_char rrow, char c, u_int fgColorBGR, u_int bgColorBGR)

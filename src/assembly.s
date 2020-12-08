@@ -11,47 +11,41 @@ jt:	.word default	;  jt[0]
 
 	.global state_advance
 state_advance:
-	sub #2, r1
-	mov.b #1, 0(r1)
 
-	bis.b #0x20, &P1OUT 	; green led on
-
-	cmp.b #2, 0(r1)
-	jz skipTwo
+	sub #2, r1 		; make space for local var
+	mov #0, 0(r1)		; move 0 into var (bool val for success)
 	
-        ;;;  range check on selector (state)
-	cmp #5, r12	; state-5 doesn't borrow if s>4
-	jhs default	
-	cmp #-1, r12
-	jz default
-
+	cmp #0, r12		; state < 0; signed comparison
+	jl default
+	
+	cmp #5, r12		; state > 5; unsigned comparison
+	jhs default
+	
 	add r12, r12
 	mov jt(r12), r0
 
 	;;;  switch table options
-	;;;  same order as in source code
-option4:
-	call #buttonFourState
-	jmp end
-option3:
-	call #buttonThreeState
-	jmp end
 option1:
-	mov #1, r12
+	add #1, 0(r1)
 	call #buttonOneState
-	mov r12, 0(r1)
 	jmp end
 option2:
+	add #1, 0(r1)
 	call #buttonTwoState
-	jmp end	; break
-
-default:
 	jmp end
+option3:
+	add #1, 0(r1)
+	call #buttonThreeState
+	jmp end
+option4:
+	mov #-40, r12		; offset var for buttonFour method
+	call #buttonFourState
+	add r12, 0(r1)
+	jmp end
+default:
+	jmp end			; on default do not add 1
 end:
-skipTwo:
-	bic.b #0x20, &P1OUT 	;green led off
-	
-	mov #1, r12
+	mov 0(r1), r12		;If val == 0 no cases were met
 	add #2, r1
 	pop r0         ; return
 
